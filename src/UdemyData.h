@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include <map>
+#include <unordered_map>
 using namespace std;
 
 struct Data
@@ -27,20 +27,37 @@ struct Data
 
 	int additionalResources;
 	// Different data type for duration?
-	double videoDuration;
+	double videoHours;
 
 	bool bestSeller;
 
 	double price;
-	double discountedPrice;
 };
 
 class UdemyData
 {
 	private:
-		map<string, Data> udemyData;
+		unordered_map<string, Data> udemyMap;
+
+		// Private Helpers (Reading CSV)
+		string getString(istringstream& parser);
+		double getDouble(istringstream& parser);
+		int getInt(istringstream& parser);
+		bool getBool(istringstream& parser);
 
 	public:
+		// Constructor(s)
+		UdemyData() {};
+		UdemyData(string filePath);
+
+		// Modifiers
 		void readCSV(string filePath);
+
+		// Getters
+		unordered_map<string, Data>& getMap();
+		int getMapSize();
+		
+		// Output-ers
+		void printMap();
 };
 
