@@ -151,8 +151,13 @@ double UdemyData::getDouble(istringstream& parser)
 bool UdemyData::getBool(istringstream& parser)
 {
 	string label = getString(parser);
-
-	transform(label.begin(), label.end(), label.begin(), std::tolower);
+	
+	/* Solution to transform function found at
+	https://stackoverflow.com/questions/313970/how-to-convert-an-instance-of-stdstring-to-lower-case
+	*/	
+	transform(label.begin(), label.end(), label.begin(), 
+	[](unsigned char c) {return std::tolower(c);} 
+	);
 
 	if (label == "yes" || label == "y")
 	{
