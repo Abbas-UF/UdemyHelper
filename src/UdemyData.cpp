@@ -26,7 +26,7 @@ void UdemyData::readCSV(string filePath)
 
 		while (!csvFile.eof())
 		{
-			Data temp;
+			Course temp;
 
 			// Get line
 			getline(csvFile, line);
@@ -68,7 +68,7 @@ int UdemyData::getMapSize()
 	return udemyMap.size();
 }
 
-unordered_map<string, Data>& UdemyData::getMap()
+unordered_map<string, Course>& UdemyData::getMap()
 {
 	return udemyMap;
 }

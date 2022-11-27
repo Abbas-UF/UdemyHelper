@@ -5,7 +5,7 @@
 #include <unordered_map>
 using namespace std;
 
-struct Data
+struct Course
 {
 	string title;
 
@@ -37,7 +37,8 @@ struct Data
 class UdemyData
 {
 	private:
-		unordered_map<string, Data> udemyMap;
+		unordered_map<string, Course> udemyMap; // This is going
+		// map<string, unordered_set<Course>> udemyMap;
 
 		// Private Helpers (Reading CSV)
 		string getString(istringstream& parser);
@@ -54,7 +55,7 @@ class UdemyData
 		void readCSV(string filePath);
 
 		// Getters
-		unordered_map<string, Data>& getMap();
+		unordered_map<string, Course>& getMap();
 		int getMapSize();
 		
 		// Output-ers
