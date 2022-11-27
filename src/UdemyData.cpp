@@ -74,6 +74,22 @@ unordered_map<string, vector<Course>>& UdemyData::getMap()
 	return udemyMap;
 }
 
+int UdemyData::getInt(istringstream& parser)
+{
+	string number = getString(parser);
+
+	try
+	{
+		return stoi(number);
+	}
+	catch (...)
+	{
+		cout << "> Error: Could not convert " << number << " to an int!" << endl;
+	}
+
+	return -1;
+}
+
 void UdemyData::tempPrint()
 {
 	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
@@ -133,21 +149,6 @@ string UdemyData::getString(istringstream& parser)
 	return result;
 }
 
-int UdemyData::getInt(istringstream& parser)
-{
-	string number = getString(parser);
-
-	try
-	{
-		return stoi(number);
-	}
-	catch (...)
-	{
-		cout << "> Error: Could not convert " << number << " to an int!" << endl;
-	}
-
-	return -1;
-}
 
 double UdemyData::getDouble(istringstream& parser)
 {
