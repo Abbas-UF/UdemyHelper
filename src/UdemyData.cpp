@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 UdemyData::UdemyData(string filePath)
@@ -54,7 +55,7 @@ void UdemyData::readCSV(string filePath)
 			temp.bestSeller = getBool(parser);
 			temp.price = getDouble(parser);
 
-			udemyMap[temp.title] = temp;
+			udemyMap[temp.category].push_back(temp);
 		}
 	}
 	else
@@ -68,11 +69,26 @@ int UdemyData::getMapSize()
 	return udemyMap.size();
 }
 
-unordered_map<string, Course>& UdemyData::getMap()
+unordered_map<string, vector<Course>>& UdemyData::getMap()
 {
 	return udemyMap;
 }
 
+void UdemyData::tempPrint()
+{
+	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
+	{
+		cout << "***===Category: " << i->first << " ===***" << endl;
+		int vectorSize = i->second.size();
+		// Accessing the second value in the map(set of Course objects)
+		for (auto j = 0; j < vectorSize; j++)
+		{
+			string temp = i->second[j].title;
+			cout << "> " << temp << endl;
+		}
+	}
+}
+/*
 void UdemyData::printMap()
 {
 	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
@@ -96,6 +112,7 @@ void UdemyData::printMap()
 		cout << i->second.price << endl;
 	}
 }
+*/
 
 // Private Helpers (Reading CSV)
 string UdemyData::getString(istringstream& parser)

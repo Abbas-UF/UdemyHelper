@@ -8,9 +8,10 @@ int main()
 {
 	UdemyData udemyData("Files/Udemy_Clean.csv");
 
-	udemyData.printMap();
+	//udemyData.printMap();
+	udemyData.tempPrint();
 
-	cout << "Total number of courses: " << udemyData.getMapSize() << endl;
+	//cout << "Total number of courses: " << udemyData.getMapSize() << endl;
 
 	return EXIT_SUCCESS;
 }

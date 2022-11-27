@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
+
 using namespace std;
 
 struct Course
@@ -37,8 +39,7 @@ struct Course
 class UdemyData
 {
 	private:
-		unordered_map<string, Course> udemyMap; // This is going
-		// map<string, unordered_set<Course>> udemyMap;
+		unordered_map<string, vector<Course>> udemyMap; // This is going
 
 		// Private Helpers (Reading CSV)
 		string getString(istringstream& parser);
@@ -55,10 +56,12 @@ class UdemyData
 		void readCSV(string filePath);
 
 		// Getters
-		unordered_map<string, Course>& getMap();
+		unordered_map<string, vector<Course>>& getMap();
 		int getMapSize();
 		
 		// Output-ers
-		void printMap();
+		//void printMap();
+
+		void tempPrint();
 };
 
