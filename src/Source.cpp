@@ -9,7 +9,7 @@ int main()
 	UdemyData udemyData("Files/Udemy_Clean.csv");
 
 	//udemyData.printMap();
-	udemyData.tempPrint();
+	udemyData.printMap();
 
 	//cout << "Total number of courses: " << udemyData.getMapSize() << endl;
 
