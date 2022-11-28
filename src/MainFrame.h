@@ -40,7 +40,7 @@ class MainFrame : public wxFrame
 		UdemyData udemyData;
 
 		// Input Fields
-		wxListCtrl* categoriesList;
+		wxListBox* categoriesList;
 		wxSlider* ratingsSlider;
 		wxChoice* filterList;
 		wxButton* applyButton;

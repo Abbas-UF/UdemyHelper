@@ -40,15 +40,13 @@ struct Course
 class UdemyData
 {
 	private:
-		unordered_map<string, vector<Course>> udemyMap; // This is going
+		unordered_map<string, vector<Course>> udemyMap;
 
 		// Private Helpers (Reading CSV)
 		string getString(istringstream& parser);
 		double getDouble(istringstream& parser);
 		int getInt(istringstream& parser);
 		bool getBool(istringstream& parser);
-		bool getCategoriesUtilComparison(wxString a, wxString b);
-		wxArrayString getCategories();
 
 	public:
 		// Constructor(s)
@@ -60,6 +58,7 @@ class UdemyData
 
 		// Getters
 		unordered_map<string, vector<Course>>& getMap();
+		wxArrayString getCategories();
 		int getMapSize();
 		
 		// Output-ers
