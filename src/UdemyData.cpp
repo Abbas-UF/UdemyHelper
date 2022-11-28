@@ -74,23 +74,7 @@ unordered_map<string, vector<Course>>& UdemyData::getMap()
 	return udemyMap;
 }
 
-int UdemyData::getInt(istringstream& parser)
-{
-	string number = getString(parser);
-
-	try
-	{
-		return stoi(number);
-	}
-	catch (...)
-	{
-		cout << "> Error: Could not convert " << number << " to an int!" << endl;
-	}
-
-	return -1;
-}
-
-void UdemyData::tempPrint()
+void UdemyData::printMap()
 {
 	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
 	{
@@ -104,31 +88,6 @@ void UdemyData::tempPrint()
 		}
 	}
 }
-/*
-void UdemyData::printMap()
-{
-	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
-	{
-		cout << i->second.title << " ";
-		cout << i->second.rating << " ";
-		cout << i->second.hiRating << " ";
-		cout << i->second.loRating << " ";
-		cout << i->second.numRatings << " ";
-		cout << i->second.category << " ";
-		cout << i->second.subcategory << " ";
-		cout << i->second.topic << " ";
-		cout << i->second.instructor << " ";
-		cout << i->second.language << " ";
-		cout << i->second.numPracticeTests << " ";
-		cout << i->second.numArticles << " ";
-		cout << i->second.numCodingExercises << " ";
-		cout << i->second.videoHours << " ";
-		cout << i->second.additionalResources << " ";
-		cout << i->second.bestSeller << " ";
-		cout << i->second.price << endl;
-	}
-}
-*/
 
 // Private Helpers (Reading CSV)
 string UdemyData::getString(istringstream& parser)
@@ -149,6 +108,21 @@ string UdemyData::getString(istringstream& parser)
 	return result;
 }
 
+int UdemyData::getInt(istringstream& parser)
+{
+	string number = getString(parser);
+
+	try
+	{
+		return stoi(number);
+	}
+	catch (...)
+	{
+		cout << "> Error: Could not convert " << number << " to an int!" << endl;
+	}
+
+	return -1;
+}
 
 double UdemyData::getDouble(istringstream& parser)
 {

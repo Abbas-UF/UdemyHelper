@@ -60,8 +60,6 @@ class UdemyData
 		int getMapSize();
 		
 		// Output-ers
-		//void printMap();
-
-		void tempPrint();
+		void printMap();
 };
 
