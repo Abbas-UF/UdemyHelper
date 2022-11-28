@@ -16,8 +16,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	wxPanel* panel = new wxPanel(this, wxID_ANY);
 
 	// Create input fields
-	categoriesList = new wxListBox(panel, wxID_ANY);
-	categoriesList->Set(categories);
+	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, categories, wxLB_MULTIPLE);
 	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxSize(100, -1));
 	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters);
 	applyButton = new wxButton(panel, wxID_ANY, "Apply", wxDefaultPosition, wxSize(-1, 50));
