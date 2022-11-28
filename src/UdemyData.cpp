@@ -64,6 +64,20 @@ void UdemyData::readCSV(string filePath)
 	}
 }
 
+bool UdemyData::getCategoriesUtilComparison(wxString a, wxString b) {
+	if (a.Cmp(b) >= 0) { return true; } // set to 0 if equal, set to positive if a > b; if equal, return arbitrary true
+	return false; // else, b > a, return false
+}
+wxArrayString UdemyData::getCategories() {
+	wxArrayString catArr;
+	// iterate through map
+	for (auto i : udemyMap) { // go through some pseudo-parsed vector of pairs
+		catArr.insert(new wxString(i.first)); // insert new wxStrings
+	}
+	catArr.Sort(getCategoriesUtilComparison); // sort alphabetically using comparison operator
+	return catArr;
+}
+
 int UdemyData::getMapSize()
 {
 	return udemyMap.size();

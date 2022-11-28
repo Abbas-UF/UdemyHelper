@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <wx/wx.h>
 
 using namespace std;
 
@@ -46,6 +47,8 @@ class UdemyData
 		double getDouble(istringstream& parser);
 		int getInt(istringstream& parser);
 		bool getBool(istringstream& parser);
+		bool getCategoriesUtilComparison(wxString a, wxString b);
+		wxArrayString getCategories();
 
 	public:
 		// Constructor(s)
