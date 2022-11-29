@@ -6,20 +6,16 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 {
 	// Read/Make Lists
 	udemyData.readCSV("Files/Udemy_Clean.csv");
-	wxArrayString categories = udemyData.getCategories();
-	wxArrayString filters;
-	filters.Add("Alphabetic");
-	filters.Add("Price");
-	filters.Add("Rating");
+	vector<wxString> filters = { "Alphabetic" , "Price", "Rating" };
+	vector<wxString> categories = udemyData.getWXCategories();
 
 	// Create main panel
 	wxPanel* panel = new wxPanel(this, wxID_ANY);
 
 	// Create input fields
-	categoriesList = new wxListBox(panel, wxID_ANY);
-	categoriesList->Set(categories);
+	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, categories.size(), &categories[0], wxLB_MULTIPLE);
 	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxSize(100, -1));
-	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters);
+	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters.size(), &filters[0]);
 	applyButton = new wxButton(panel, wxID_ANY, "Apply", wxDefaultPosition, wxSize(-1, 50));
 
 	// Create output fields
