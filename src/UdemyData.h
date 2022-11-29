@@ -58,7 +58,7 @@ class UdemyData
 
 		// Getters
 		unordered_map<string, vector<Course>>& getMap();
-		wxArrayString getCategories();
+		vector<wxString> getWXCategories();
 		int getMapSize();
 		
 		// Output-ers

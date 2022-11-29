@@ -74,16 +74,16 @@ unordered_map<string, vector<Course>>& UdemyData::getMap()
 	return udemyMap;
 }
 
-wxArrayString UdemyData::getCategories()
+vector<wxString> UdemyData::getWXCategories()
 {
-	wxArrayString result;
+	vector<wxString> result;
 
 	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
 	{
-		result.Add(i->first);
+		result.push_back(i->first);
 	}
 
-	result.Sort();
+	sort(result.begin(), result.end());
 	return result;
 }
 
