@@ -16,10 +16,11 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, categories.size(), &categories[0], wxLB_MULTIPLE);
 	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxSize(100, -1));
 	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters.size(), &filters[0]);
+	filterList->SetSelection(0);
 	applyButton = new wxButton(panel, wxID_ANY, "Apply", wxDefaultPosition, wxSize(-1, 50));
 
 	// Create output fields
-	courseList = new wxListCtrl(panel, wxID_ANY);
+	coursesList.listBox = new wxListBox(panel, wxID_ANY);
 	courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.topic = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.category = new wxStaticText(panel, wxID_ANY, "");
@@ -100,7 +101,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	gridSizer->Add(applyButton, wxGBPosition(5, 1), wxGBSpan(4, 1), wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL);
 
 	gridSizer->Add(coursesHeader, wxGBPosition(0, 2), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseList, wxGBPosition(1, 2), wxGBSpan(8, 3), wxEXPAND);
+	gridSizer->Add(coursesList.listBox, wxGBPosition(1, 2), wxGBSpan(8, 3), wxEXPAND);
 
 	// TODO: Split the output between bottom left and bottom right
 	gridSizer->Add(titleHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
@@ -121,6 +122,24 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	gridSizer->Add(bestSellerHeader, wxGBPosition(24, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(priceHeader, wxGBPosition(25, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 
+	gridSizer->Add(courseInfo.title, wxGBPosition(9, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.topic, wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.category, wxGBPosition(11, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.subcategory, wxGBPosition(12, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.numRatings, wxGBPosition(13, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.rating, wxGBPosition(14, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.hiRating, wxGBPosition(15, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.loRating, wxGBPosition(16, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.instructor, wxGBPosition(17, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.language, wxGBPosition(18, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.numArticles, wxGBPosition(19, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.numPracticeTests, wxGBPosition(20, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.numCodingExercises, wxGBPosition(21, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.additionalResources, wxGBPosition(22, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.videoHours, wxGBPosition(23, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.bestSeller, wxGBPosition(24, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.price, wxGBPosition(25, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+
 	gridSizer->AddGrowableRow(1);
 	gridSizer->AddGrowableCol(2);
 	gridSizer->AddGrowableCol(3);
@@ -128,7 +147,11 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	sizerM->Add(gridSizer, 1, wxEXPAND | wxALL, 20);
 	panel->SetSizerAndFit(sizerM);
 
-	SetMinSize(wxSize(600, 500));
+	SetMinSize(wxSize(900, 500));
+
+	// Binds
+	applyButton->Bind(wxEVT_BUTTON, &MainFrame::onApplyPressed, this);
+	coursesList.listBox->Bind(wxEVT_LISTBOX, &MainFrame::onCourseSelected, this);
 }
 
 void MainFrame::updateCourseInfo(Course course)
@@ -151,4 +174,45 @@ void MainFrame::updateCourseInfo(Course course)
 	courseInfo.videoHours->SetLabel(to_string(course.videoHours));
 	courseInfo.bestSeller->SetLabel(to_string(course.bestSeller));
 	courseInfo.price->SetLabel(to_string(course.price));
+}
+
+vector<string> MainFrame::getSelectedCategories()
+{
+	wxArrayInt selectedIndexes;
+	categoriesList->GetSelections(selectedIndexes);
+
+	vector<string> result;
+
+	for (auto i = selectedIndexes.begin(); i != selectedIndexes.end(); i++)
+	{
+		result.push_back(categoriesList->GetString(*i).ToStdString());
+	}
+
+	return result;
+}
+
+void MainFrame::onApplyPressed(wxCommandEvent& evt)
+{
+	vector<string> selectedCategories = getSelectedCategories();
+
+	if (!selectedCategories.empty())
+	{
+		coursesList.coursesVector = udemyData.getCoursesByRating(selectedCategories, ratingsSlider->GetValue());
+
+		// TODO: Incorporate Riley's implementation of sorting.
+		// ...
+
+		wxArrayString output;
+		for (int i = 0; i < coursesList.coursesVector.size(); i++)
+		{
+			output.Add(coursesList.coursesVector[i].title);
+		}
+
+		coursesList.listBox->Set(output);
+	}
+}
+
+void MainFrame::onCourseSelected(wxCommandEvent& evt)
+{
+	updateCourseInfo(coursesList.coursesVector[coursesList.listBox->GetSelection()]);
 }

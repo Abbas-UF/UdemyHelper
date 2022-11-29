@@ -83,7 +83,33 @@ vector<wxString> UdemyData::getWXCategories()
 		result.push_back(i->first);
 	}
 
+	// STL sort has worst-case time complexity of O(logN)
 	sort(result.begin(), result.end());
+
+	return result;
+}
+
+vector<Course> UdemyData::getCoursesByRating(vector<string> categories, float rating)
+{
+	vector<Course> result;
+
+	for (auto i = 0; i < categories.size(); i++)
+	{
+		auto iterator = udemyMap.find(categories[i]);
+
+		// This check is unnecessary, but here for safety purposes
+		if (iterator != udemyMap.end())
+		{
+			for (auto j = iterator->second.begin(); j != iterator->second.end(); j++)
+			{
+				if (j->rating >= rating)
+				{
+					result.push_back(*j);
+				}
+			}
+		}
+	}
+
 	return result;
 }
 
@@ -157,12 +183,20 @@ bool UdemyData::getBool(istringstream& parser)
 {
 	string label = getString(parser);
 	
-	/* Solution to transform function found at
-	https://stackoverflow.com/questions/313970/how-to-convert-an-instance-of-stdstring-to-lower-case
-	*/	
+	// TODO: Delete later
+	// INFO: Transform and for loop are similar in performance, but the latter is easier-to-read.
+	/*
+	// Solution to transform function found at:
+	// https://stackoverflow.com/questions/313970/how-to-convert-an-instance-of-stdstring-to-lower-case
 	transform(label.begin(), label.end(), label.begin(), 
 	[](unsigned char c) {return std::tolower(c);} 
 	);
+	*/
+
+	for (int i = 0; i < label.size(); i++)
+	{
+		label[i] = tolower((unsigned char) label[i]);
+	}
 
 	if (label == "yes" || label == "y")
 	{

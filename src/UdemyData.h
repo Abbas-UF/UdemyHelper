@@ -2,8 +2,9 @@
 
 #include <iostream>
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 #include <wx/wx.h>
 
 using namespace std;
@@ -59,6 +60,7 @@ class UdemyData
 		// Getters
 		unordered_map<string, vector<Course>>& getMap();
 		vector<wxString> getWXCategories();
+		vector<Course> getCoursesByRating(vector<string> categories, float rating);
 		int getMapSize();
 		
 		// Output-ers

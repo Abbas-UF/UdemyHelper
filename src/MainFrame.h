@@ -4,6 +4,12 @@
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 
+struct wxCoursesList
+{
+	wxListBox* listBox;
+	vector<Course> coursesVector;
+};
+
 struct wxCourseInfo
 {
 	wxStaticText* title;
@@ -46,11 +52,16 @@ class MainFrame : public wxFrame
 		wxButton* applyButton;
 
 		// Output Fields
-		wxListCtrl* courseList;
+		wxCoursesList coursesList;
 		wxCourseInfo courseInfo;
 
 		// Private Helpers
 		void updateCourseInfo(Course course);
+		vector<string> getSelectedCategories();
+
+		// Private Binds
+		void onApplyPressed(wxCommandEvent& evt);
+		void onCourseSelected(wxCommandEvent& evt);
 
 	public:
 		MainFrame(const wxString& title);
