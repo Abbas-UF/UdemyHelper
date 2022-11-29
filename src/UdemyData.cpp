@@ -376,24 +376,3 @@ void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha, bool
 	mergeSort(OV, mid + 1, end, alpha, price, rating);
 	mergeUtil(OV, beg, mid, end, alpha, price, rating); // Send our sub-indexes to do magic sorting stuff
 }
-
-/* --------------------------------------------------------------------------
-	Sorting Notes:
-
-	In order to track execution time, I've included a library called 'chrono'.
-	To use this, just do:
-
-	auto start = chrono::high_resolution_clock::now();
-	SORT();
-	auto end = chrono::high_resolution_clock::now();
-
-	between calling the sorts. Then, set:
-
-	auto exec_time = chrono::duration_cast<chrono::microseconds>(shell_end - shell_start);
-
-	and then you can cast it to an int if desired (or wxInt, etc). This'll display milliseconds it takes
-	for the sort's execution (usually ~150ms for shell, ~350ms for merge on my machine)
-
-	Methology to track execution time was found here:
-	https://www.geeksforgeeks.org/measure-execution-time-function-cpp/
-   -------------------------------------------------------------------------- */

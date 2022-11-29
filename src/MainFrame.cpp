@@ -13,7 +13,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	wxPanel* panel = new wxPanel(this, wxID_ANY);
 
 	// Create input fields
-	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, categories.size(), &categories[0], wxLB_MULTIPLE);
+	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxSize(350, -1), categories.size(), &categories[0], wxLB_MULTIPLE);
 	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxSize(100, -1));
 	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters.size(), &filters[0]);
 	filterList->SetSelection(0);
@@ -21,7 +21,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 
 	// Create output fields
 	coursesList.listBox = new wxListBox(panel, wxID_ANY);
-	//courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
+	courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.topic = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.category = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.subcategory = new wxStaticText(panel, wxID_ANY, "");
@@ -50,8 +50,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	ratingsHeader->SetFont(*boldFont);
 	wxStaticText* filterHeader = new wxStaticText(panel, wxID_ANY, "Sort By:");
 	filterHeader->SetFont(*boldFont);
-	//wxStaticText* titleHeader = new wxStaticText(panel, wxID_ANY, "Course Title:");
-	//titleHeader->SetFont(*boldFont);
+	wxStaticText* titleHeader = new wxStaticText(panel, wxID_ANY, "Course Title:");
+	titleHeader->SetFont(*boldFont);
 	wxStaticText* topicHeader = new wxStaticText(panel, wxID_ANY, "Topic:");
 	topicHeader->SetFont(*boldFont);
 	wxStaticText* categoryHeader = new wxStaticText(panel, wxID_ANY, "Category:");
@@ -104,50 +104,49 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	gridSizer->Add(coursesList.listBox, wxGBPosition(1, 2), wxGBSpan(8, 3), wxEXPAND);
 
 	// TODO: Split the output between bottom left and bottom right
-	//gridSizer->Add(titleHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(topicHeader, wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(categoryHeader, wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(subcategoryHeader, wxGBPosition(12, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(numRatingsHeader, wxGBPosition(13, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(avgRatingHeader, wxGBPosition(14, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(hiRatingHeader, wxGBPosition(15, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(loRatingHeader, wxGBPosition(16, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(instructorHeader, wxGBPosition(17, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(languageHeader, wxGBPosition(18, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(numArticlesHeader, wxGBPosition(19, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(numPracticeTestsHeader, wxGBPosition(20, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(numCodingExercisesHeader, wxGBPosition(21, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(additionalResourcesHeader, wxGBPosition(22, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(videoHoursHeader, wxGBPosition(23, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(bestSellerHeader, wxGBPosition(24, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(priceHeader, wxGBPosition(25, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(topicHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(categoryHeader, wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(subcategoryHeader, wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(titleHeader, wxGBPosition(9, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(instructorHeader, wxGBPosition(10, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(languageHeader, wxGBPosition(11, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(numRatingsHeader, wxGBPosition(13, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(avgRatingHeader, wxGBPosition(14, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(hiRatingHeader, wxGBPosition(15, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(loRatingHeader, wxGBPosition(16, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(numArticlesHeader, wxGBPosition(13, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(numPracticeTestsHeader, wxGBPosition(14, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(numCodingExercisesHeader, wxGBPosition(15, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(additionalResourcesHeader, wxGBPosition(16, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(videoHoursHeader, wxGBPosition(17, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(bestSellerHeader, wxGBPosition(18, 2), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(priceHeader, wxGBPosition(18, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
-	//gridSizer->Add(courseInfo.title, wxGBPosition(9, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.topic, wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.category, wxGBPosition(11, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.subcategory, wxGBPosition(12, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.numRatings, wxGBPosition(13, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.rating, wxGBPosition(14, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.hiRating, wxGBPosition(15, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.loRating, wxGBPosition(16, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.instructor, wxGBPosition(17, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.language, wxGBPosition(18, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.numArticles, wxGBPosition(19, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.numPracticeTests, wxGBPosition(20, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.numCodingExercises, wxGBPosition(21, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.additionalResources, wxGBPosition(22, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.videoHours, wxGBPosition(23, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.bestSeller, wxGBPosition(24, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
-	gridSizer->Add(courseInfo.price, wxGBPosition(25, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	gridSizer->Add(courseInfo.topic, wxGBPosition(9, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.category, wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.subcategory, wxGBPosition(11, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.title, wxGBPosition(9, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.instructor, wxGBPosition(10, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.language, wxGBPosition(11, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.numRatings, wxGBPosition(13, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.rating, wxGBPosition(14, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.hiRating, wxGBPosition(15, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.loRating, wxGBPosition(16, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.numArticles, wxGBPosition(13, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.numPracticeTests, wxGBPosition(14, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.numCodingExercises, wxGBPosition(15, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.additionalResources, wxGBPosition(16, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.videoHours, wxGBPosition(17, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.bestSeller, wxGBPosition(18, 3), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
+	gridSizer->Add(courseInfo.price, wxGBPosition(18, 1), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 
 	gridSizer->AddGrowableRow(1);
-	gridSizer->AddGrowableCol(2);
 	gridSizer->AddGrowableCol(3);
 
 	sizerM->Add(gridSizer, 1, wxEXPAND | wxALL, 20);
 	panel->SetSizerAndFit(sizerM);
 
-	SetMinSize(wxSize(900, 500));
+	SetMinSize(wxSize(1000, 800));
 
 	// Binds
 	applyButton->Bind(wxEVT_BUTTON, &MainFrame::onApplyPressed, this);
@@ -158,8 +157,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 
 void MainFrame::updateCourseInfo(Course course)
 {
-	// TODO: Test to see if output is correct.
-	//courseInfo.title->SetLabel(course.title);
+	courseInfo.title->SetLabel(course.title);
 	courseInfo.topic->SetLabel(course.topic);
 	courseInfo.category->SetLabel(course.category);
 	courseInfo.subcategory->SetLabel(course.subcategory);
@@ -203,13 +201,11 @@ void MainFrame::onApplyPressed(wxCommandEvent& evt)
 
 		// TODO: Incorporate switch between shell and merge sort
 
-		auto start = chrono::high_resolution_clock::now();
+		auto beg = chrono::high_resolution_clock::now();
 		udemyData.shellSort(coursesList.coursesVector, coursesList.coursesVector.size());
 		auto end = chrono::high_resolution_clock::now();
 
-		auto exec_time = chrono::duration_cast<chrono::milliseconds>(end - start);
-		wxString temp = to_string(exec_time.count());
-		wxLogStatus("Sort Time: " + temp + "ms");
+		wxLogStatus("Sort Time: " + (wxString) to_string(chrono::duration_cast<chrono::milliseconds>(end - beg).count()) + "ms");
 
 		wxArrayString output;
 		for (int i = 0; i < coursesList.coursesVector.size(); i++)
