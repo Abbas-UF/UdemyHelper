@@ -220,15 +220,24 @@ bool UdemyData::getBool(istringstream& parser)
 // ---------------------------------------------------
 //      Comparison Operators for each 'sort by'
 // ---------------------------------------------------
-bool UdemyData::greaterAlpha(const Course& a, const Course& b) {
+bool UdemyData::greaterAlpha(const Course& a, const Course& b)
+{
 	return (a.title > b.title);
 }
-bool UdemyData::greaterPrice(const Course& a, const Course& b) {
-	if (a.price == b.price) { return greaterAlpha(a, b); }
+bool UdemyData::greaterPrice(const Course& a, const Course& b)
+{
+	if (a.price == b.price)
+	{
+		return greaterAlpha(a, b);
+	}
 	return (a.price > b.price);
 }
-bool UdemyData::greaterRating(const Course& a, const Course& b) {
-	if (a.rating == b.rating) { return greaterAlpha(a, b); }
+bool UdemyData::greaterRating(const Course& a, const Course& b)
+{
+	if (a.rating == b.rating)
+	{
+		return greaterAlpha(a, b);
+	}
 	else return (a.rating > b.rating);
 }
 
@@ -238,24 +247,35 @@ bool UdemyData::greaterRating(const Course& a, const Course& b) {
 // ---------------------------------------------------
 
 // The bools track whether an alphabetical, price, or rating 'sort by' is selected
-void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha = false, bool price = false, bool rating = true) {
-	for (int gap = size / 2; gap > 0; gap /= 2) { // gap gets progressively smaller
-		for (int g_sort = gap; g_sort < size; g_sort++) { // for each index not gap-sorted already
+void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha, bool price, bool rating)
+{
+	for (int gap = size / 2; gap > 0; gap /= 2)
+	{
+		// gap gets progressively smaller
+		for (int g_sort = gap; g_sort < size; g_sort++)
+		{
+			// for each index not gap-sorted already
 			Course T = OV[g_sort]; // temporary course object
 			int itr = g_sort;
 			// iterate indexes by gap (itr >= gap, itr -= gap) and shift them up until correct OV location is found (OV[itr - gap].second > T.second)
-			if (alpha) {
-				for (itr = g_sort; itr >= gap && greaterAlpha(OV[itr - gap], T); itr -= gap) {
+			if (alpha)
+			{
+				for (itr = g_sort; itr >= gap && greaterAlpha(OV[itr - gap], T); itr -= gap)
+				{
 					OV[itr] = OV[itr - gap]; // keep shifting till found
 				}
 			}
-			else if (price) {
-				for (itr = g_sort; itr >= gap && greaterPrice(OV[itr - gap], T); itr -= gap) {
+			else if (price)
+			{
+				for (itr = g_sort; itr >= gap && greaterPrice(OV[itr - gap], T); itr -= gap)
+				{
 					OV[itr] = OV[itr - gap]; // keep shifting till found
 				}
 			}
-			else if (rating) {
-				for (itr = g_sort; itr >= gap && greaterRating(OV[itr - gap], T); itr -= gap) {
+			else if (rating)
+			{
+				for (itr = g_sort; itr >= gap && greaterRating(OV[itr - gap], T); itr -= gap)
+				{
 					OV[itr] = OV[itr - gap]; // keep shifting till found
 				}
 			}
@@ -268,48 +288,63 @@ void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha = false, bool
 // ---------------------------------------------------
 //      Merge Sort
 // ---------------------------------------------------
-void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha = false, bool price = false, bool rating = true) {
+void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha = false, bool price = false, bool rating = true)
+{
 	int first = mid - beg + 1; // set a 'first' index
 	int last = end - mid; // set a 'last' index
 	vector<Course> VF; // our two temporary vectors. Vector First and Vector Last
 	vector<Course> VL; // These will contain indexes [begin -> mid] and [mid+1 -> end]
 
-	for (int i = 0; i < first; i++) { // Populate our temporary vectors with their respective half
+	for (int i = 0; i < first; i++)
+	{ // Populate our temporary vectors with their respective half
 		VF.push_back(OV[beg + i]);
 	}
-	for (int a = 0; a < last; a++) {
+	for (int a = 0; a < last; a++)
+	{
 		VL.push_back(OV[mid + a + 1]);
 	}
 	int subVF = 0; // Keep track of the indexes we are processing in our first and last subvector, as well as our original object vector
 	int subVL = 0;
 	int subOV = beg;
-	while (subVF < first && subVL < last) { // until end is reached for each sub vector
-		if (alpha) {
-			if (greaterAlpha(VF[subVF], VL[subVL])) { // pick lesser rating (the second of the pair of each vector index)
+	while (subVF < first && subVL < last)
+	{
+		// until end is reached for each sub vector
+		if (alpha)
+		{
+			if (greaterAlpha(VF[subVF], VL[subVL]))
+			{
+				// pick lesser rating (the second of the pair of each vector index)
 				OV[subOV] = VL[subVL]; // and swap original vector's index with that subvector index
 				subVL++;
 			}
-			else {
+			else
+			{
 				OV[subOV] = VF[subVF];
 				subVF++;
 			}
 		}
-		else if (price) {
-			if (greaterPrice(VF[subVF], VL[subVL])) {
+		else if (price)
+		{
+			if (greaterPrice(VF[subVF], VL[subVL]))
+			{
 				OV[subOV] = VL[subVL];
 				subVL++;
 			}
-			else {
+			else
+			{
 				OV[subOV] = VF[subVF];
 				subVF++;
 			}
 		}
-		else if (rating) {
-			if (greaterRating(VF[subVF], VL[subVL])) {
+		else if (rating)
+		{
+			if (greaterRating(VF[subVF], VL[subVL]))
+			{
 				OV[subOV] = VL[subVL];
 				subVL++;
 			}
-			else {
+			else
+			{
 				OV[subOV] = VF[subVF];
 				subVF++;
 			}
@@ -317,18 +352,22 @@ void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool al
 		subOV++; // each relevent index is increased at this point
 	}
 	// These while loops are for any remaining elements after going through first and last subvector (when first != last)
-	while (subVF < first) {
+	while (subVF < first)
+	{
 		OV[subOV] = VF[subVF];
 		subOV++;
 		subVF++;
 	}
-	while (subVL < last) {
+	while (subVL < last)
+	{
 		OV[subOV] = VL[subVL];
 		subOV++;
 		subVL++;
 	}
 }
-void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha = false, bool price = false, bool rating = true) {
+
+void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha = false, bool price = false, bool rating = true)
+{
 	if (beg >= end) // Base-case for recursive calls
 		return;
 

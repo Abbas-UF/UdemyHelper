@@ -77,7 +77,7 @@ class UdemyData
 		void printMap();
 
 		// Sorts
-		void shellSort(vector<Course>& OV, int size, bool alpha, bool price, bool rating);
+		void shellSort(vector<Course>& OV, int size, bool alpha = false, bool price = false, bool rating = true);
 		void mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha, bool price, bool rating);
 		void mergeSort(vector<Course>& OV, int beg, int end, bool alpha, bool price, bool rating);
 };

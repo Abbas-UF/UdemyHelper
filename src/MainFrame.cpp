@@ -201,6 +201,7 @@ void MainFrame::onApplyPressed(wxCommandEvent& evt)
 
 		// TODO: Incorporate Riley's implementation of sorting.
 		// ...
+		udemyData.shellSort(coursesList.coursesVector, coursesList.coursesVector.size());
 
 		wxArrayString output;
 		for (int i = 0; i < coursesList.coursesVector.size(); i++)
