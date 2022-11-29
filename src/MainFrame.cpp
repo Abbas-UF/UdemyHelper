@@ -21,7 +21,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 
 	// Create output fields
 	coursesList.listBox = new wxListBox(panel, wxID_ANY);
-	courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
+	//courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.topic = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.category = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.subcategory = new wxStaticText(panel, wxID_ANY, "");
@@ -50,8 +50,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	ratingsHeader->SetFont(*boldFont);
 	wxStaticText* filterHeader = new wxStaticText(panel, wxID_ANY, "Sort By:");
 	filterHeader->SetFont(*boldFont);
-	wxStaticText* titleHeader = new wxStaticText(panel, wxID_ANY, "Course Title:");
-	titleHeader->SetFont(*boldFont);
+	//wxStaticText* titleHeader = new wxStaticText(panel, wxID_ANY, "Course Title:");
+	//titleHeader->SetFont(*boldFont);
 	wxStaticText* topicHeader = new wxStaticText(panel, wxID_ANY, "Topic:");
 	topicHeader->SetFont(*boldFont);
 	wxStaticText* categoryHeader = new wxStaticText(panel, wxID_ANY, "Category:");
@@ -104,7 +104,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	gridSizer->Add(coursesList.listBox, wxGBPosition(1, 2), wxGBSpan(8, 3), wxEXPAND);
 
 	// TODO: Split the output between bottom left and bottom right
-	gridSizer->Add(titleHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
+	//gridSizer->Add(titleHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(topicHeader, wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(categoryHeader, wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(subcategoryHeader, wxGBPosition(12, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
@@ -122,7 +122,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	gridSizer->Add(bestSellerHeader, wxGBPosition(24, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(priceHeader, wxGBPosition(25, 0), wxGBSpan(1, 1), wxALIGN_LEFT);
 
-	gridSizer->Add(courseInfo.title, wxGBPosition(9, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
+	//gridSizer->Add(courseInfo.title, wxGBPosition(9, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(courseInfo.topic, wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(courseInfo.category, wxGBPosition(11, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(courseInfo.subcategory, wxGBPosition(12, 1), wxGBSpan(1, 1), wxALIGN_LEFT);
@@ -152,12 +152,14 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	// Binds
 	applyButton->Bind(wxEVT_BUTTON, &MainFrame::onApplyPressed, this);
 	coursesList.listBox->Bind(wxEVT_LISTBOX, &MainFrame::onCourseSelected, this);
+
+	CreateStatusBar();
 }
 
 void MainFrame::updateCourseInfo(Course course)
 {
 	// TODO: Test to see if output is correct.
-	courseInfo.title->SetLabel(course.title);
+	//courseInfo.title->SetLabel(course.title);
 	courseInfo.topic->SetLabel(course.topic);
 	courseInfo.category->SetLabel(course.category);
 	courseInfo.subcategory->SetLabel(course.subcategory);
@@ -199,9 +201,15 @@ void MainFrame::onApplyPressed(wxCommandEvent& evt)
 	{
 		coursesList.coursesVector = udemyData.getCoursesByRating(selectedCategories, ratingsSlider->GetValue());
 
-		// TODO: Incorporate Riley's implementation of sorting.
-		// ...
+		// TODO: Incorporate switch between shell and merge sort
+
+		auto start = chrono::high_resolution_clock::now();
 		udemyData.shellSort(coursesList.coursesVector, coursesList.coursesVector.size());
+		auto end = chrono::high_resolution_clock::now();
+
+		auto exec_time = chrono::duration_cast<chrono::milliseconds>(end - start);
+		wxString temp = to_string(exec_time.count());
+		wxLogStatus("Sort Time: " + temp + "ms");
 
 		wxArrayString output;
 		for (int i = 0; i < coursesList.coursesVector.size(); i++)
