@@ -5,6 +5,11 @@
 #include <unordered_map>
 #include <vector>
 #include <wx/wx.h>
+#include <chrono>
+#include <time.h>
+#include <stdlib.h>
+#include <iomanip>
+#include <utility>
 
 using namespace std;
 
@@ -48,6 +53,11 @@ class UdemyData
 		int getInt(istringstream& parser);
 		bool getBool(istringstream& parser);
 
+		// Private Helpers (Sorting)
+		bool greaterAlpha(const Course& a, const Course& b);
+		bool greaterPrice(const Course& a, const Course& b);
+		bool greaterRating(const Course& a, const Course& b);
+
 	public:
 		// Constructor(s)
 		UdemyData() {};
@@ -63,5 +73,10 @@ class UdemyData
 		
 		// Output-ers
 		void printMap();
+
+		// Sorts
+		void shellSort(vector<Course>& OV, int size, bool alpha, bool price, bool rating);
+		void mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha, bool price, bool rating);
+		void mergeSort(vector<Course>& OV, int beg, int end, bool alpha, bool price, bool rating);
 };
 
