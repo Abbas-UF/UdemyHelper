@@ -288,7 +288,7 @@ void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha, bool price, 
 // ---------------------------------------------------
 //      Merge Sort
 // ---------------------------------------------------
-void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha = false, bool price = false, bool rating = true)
+void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha, bool price, bool rating)
 {
 	int first = mid - beg + 1; // set a 'first' index
 	int last = end - mid; // set a 'last' index
@@ -366,7 +366,7 @@ void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool al
 	}
 }
 
-void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha = false, bool price = false, bool rating = true)
+void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha, bool price, bool rating)
 {
 	if (beg >= end) // Base-case for recursive calls
 		return;
