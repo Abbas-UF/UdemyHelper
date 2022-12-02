@@ -6,16 +6,16 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 {
 	// Read/Make Lists
 	udemyData.readCSV("Files/Udemy_Clean.csv");
-	vector<wxString> filters = { "Alphabetic" , "Price", "Rating" };
+	vector<wxString> filters = { "Alphabetic" , "Price", "Rating", "Number of Ratings"};
 	vector<wxString> categories = udemyData.getWXCategories();
 
 	// Create main panel
 	wxPanel* panel = new wxPanel(this, wxID_ANY);
 
 	// Create input fields
-	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxSize(350, -1), categories.size(), &categories[0], wxLB_MULTIPLE);
-	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxSize(100, -1));
-	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxSize(100, -1), filters.size(), &filters[0]);
+	categoriesList = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxSize(400, -1), categories.size(), &categories[0], wxLB_MULTIPLE);
+	ratingsSlider = new wxSlider(panel, wxID_ANY, 3, 0, 5, wxDefaultPosition, wxDefaultSize, wxSL_MIN_MAX_LABELS | wxSL_AUTOTICKS);
+	filterList = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, filters.size(), &filters[0]);
 	filterList->SetSelection(0);
 	applyButton = new wxButton(panel, wxID_ANY, "Apply", wxDefaultPosition, wxSize(-1, 50));
 
@@ -24,7 +24,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	sortType = SORT_TYPE::SHELL;
 
 	// Create output fields
-	coursesList.listBox = new wxListBox(panel, wxID_ANY);
+	coursesList.listBox = new wxListBox(panel, wxID_ANY, wxDefaultPosition, wxSize(750, -1));
 	courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.topic = new wxStaticText(panel, wxID_ANY, "");
 	courseInfo.category = new wxStaticText(panel, wxID_ANY, "");
@@ -150,7 +150,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	sizerM->Add(gridSizer, 1, wxEXPAND | wxALL, 20);
 	panel->SetSizerAndFit(sizerM);
 
-	SetMinSize(wxSize(1000, 800));
+	SetMinSize(wxSize(1600, 800));
 
 	// Binds
 	sortButton->Bind(wxEVT_BUTTON, &MainFrame::onSortPressed, this);
@@ -205,6 +205,10 @@ SORT_FILTER MainFrame::getSelectedFilter()
 	else if (filterList->GetStringSelection() == "Price")
 	{
 		return SORT_FILTER::PRICE;
+	}
+	else if (filterList->GetStringSelection() == "Number of Ratings")
+	{
+		return SORT_FILTER::NUM_RATING;
 	}
 	else
 	{

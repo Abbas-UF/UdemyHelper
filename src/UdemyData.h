@@ -14,7 +14,7 @@
 
 using namespace std;
 
-enum SORT_FILTER {RATING = 00, ALPHA = 02, PRICE = 04};
+enum SORT_FILTER { ALPHA = 0b0000, PRICE = 0b0010, RATING = 0b0100, NUM_RATING = 0b1000};
 
 struct Course
 {

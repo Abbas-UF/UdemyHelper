@@ -230,9 +230,13 @@ bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type
 	{
 		return (a.rating > b.rating);
 	}
+	else if(type == SORT_FILTER::NUM_RATING && a.numRatings != b.numRatings)
+	{
+		return (a.numRatings > b.numRatings);
+	}
 	else
 	{
-		return (a.title > b.title);
+		return a.title > b.title;
 	}
 }
 
