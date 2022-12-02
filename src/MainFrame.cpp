@@ -19,6 +19,10 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	filterList->SetSelection(0);
 	applyButton = new wxButton(panel, wxID_ANY, "Apply", wxDefaultPosition, wxSize(-1, 50));
 
+	// Sort Button & Data
+	sortButton = new wxButton(panel, wxID_ANY, "Sort: Shell", wxDefaultPosition, wxDefaultSize);
+	sortType = SORT_TYPE::SHELL;
+
 	// Create output fields
 	coursesList.listBox = new wxListBox(panel, wxID_ANY);
 	courseInfo.title = new wxStaticText(panel, wxID_ANY, "");
@@ -102,8 +106,8 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 
 	gridSizer->Add(coursesHeader, wxGBPosition(0, 2), wxGBSpan(1, 1), wxALIGN_LEFT);
 	gridSizer->Add(coursesList.listBox, wxGBPosition(1, 2), wxGBSpan(8, 3), wxEXPAND);
+	gridSizer->Add(sortButton, wxGBPosition(0, 4), wxGBSpan(1, 1), wxALIGN_RIGHT);
 
-	// TODO: Split the output between bottom left and bottom right
 	gridSizer->Add(topicHeader, wxGBPosition(9, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	gridSizer->Add(categoryHeader, wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	gridSizer->Add(subcategoryHeader, wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
@@ -149,6 +153,7 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	SetMinSize(wxSize(1000, 800));
 
 	// Binds
+	sortButton->Bind(wxEVT_BUTTON, &MainFrame::onSortPressed, this);
 	applyButton->Bind(wxEVT_BUTTON, &MainFrame::onApplyPressed, this);
 	coursesList.listBox->Bind(wxEVT_LISTBOX, &MainFrame::onCourseSelected, this);
 
@@ -191,6 +196,36 @@ vector<string> MainFrame::getSelectedCategories()
 	return result;
 }
 
+SORT_FILTER MainFrame::getSelectedFilter()
+{
+	if (filterList->GetStringSelection() == "Rating")
+	{
+		return SORT_FILTER::RATING;
+	}
+	else if (filterList->GetStringSelection() == "Price")
+	{
+		return SORT_FILTER::PRICE;
+	}
+	else
+	{
+		return SORT_FILTER::ALPHA;
+	}
+}
+
+void MainFrame::onSortPressed(wxCommandEvent& evt)
+{
+	if (sortType == SORT_TYPE::SHELL)
+	{
+		sortButton->SetLabel("Sort: Merge");
+		sortType = SORT_TYPE::MERGE;
+	}
+	else
+	{
+		sortButton->SetLabel("Sort: Shell");
+		sortType = SORT_TYPE::SHELL;
+	}
+}
+
 void MainFrame::onApplyPressed(wxCommandEvent& evt)
 {
 	vector<string> selectedCategories = getSelectedCategories();
@@ -199,11 +234,21 @@ void MainFrame::onApplyPressed(wxCommandEvent& evt)
 	{
 		coursesList.coursesVector = udemyData.getCoursesByRating(selectedCategories, ratingsSlider->GetValue());
 
-		// TODO: Incorporate switch between shell and merge sort
+		chrono::steady_clock::time_point beg;
+		chrono::steady_clock::time_point end;
 
-		auto beg = chrono::high_resolution_clock::now();
-		udemyData.shellSort(coursesList.coursesVector, coursesList.coursesVector.size());
-		auto end = chrono::high_resolution_clock::now();
+		if (sortType == SORT_TYPE::SHELL)
+		{
+			beg = chrono::high_resolution_clock::now();
+			udemyData.shellSort(coursesList.coursesVector, getSelectedFilter());
+			end = chrono::high_resolution_clock::now();
+		}
+		else
+		{
+			beg = chrono::high_resolution_clock::now();
+			udemyData.mergeSort(coursesList.coursesVector, 0, coursesList.coursesVector.size() - 1, getSelectedFilter());
+			end = chrono::high_resolution_clock::now();
+		}
 
 		wxLogStatus("Sort Time: " + (wxString) to_string(chrono::duration_cast<chrono::milliseconds>(end - beg).count()) + "ms");
 

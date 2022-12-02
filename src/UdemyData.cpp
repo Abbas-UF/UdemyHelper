@@ -220,65 +220,44 @@ bool UdemyData::getBool(istringstream& parser)
 // ---------------------------------------------------
 //      Comparison Operators for each 'sort by'
 // ---------------------------------------------------
-bool UdemyData::greaterAlpha(const Course& a, const Course& b)
+bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type)
 {
-	return (a.title > b.title);
-}
-bool UdemyData::greaterPrice(const Course& a, const Course& b)
-{
-	if (a.price == b.price)
+	if (type == SORT_FILTER::PRICE && a.price != b.price)
 	{
-		return greaterAlpha(a, b);
+		return (a.price > b.price);
 	}
-	return (a.price > b.price);
-}
-bool UdemyData::greaterRating(const Course& a, const Course& b)
-{
-	if (a.rating == b.rating)
+	else if (type == SORT_FILTER::RATING && a.rating != b.rating)
 	{
-		return greaterAlpha(a, b);
+		return (a.rating > b.rating);
 	}
-	else return (a.rating > b.rating);
+	else
+	{
+		return (a.title > b.title);
+	}
 }
-
 
 // ---------------------------------------------------
 //      Shell Sort
 // ---------------------------------------------------
 
 // The bools track whether an alphabetical, price, or rating 'sort by' is selected
-void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha, bool price, bool rating)
+void UdemyData::shellSort(vector<Course>& OV, SORT_FILTER type)
 {
-	for (int gap = size / 2; gap > 0; gap /= 2)
+	for (int gap = OV.size() / 2; gap > 0; gap /= 2)
 	{
 		// gap gets progressively smaller
-		for (int g_sort = gap; g_sort < size; g_sort++)
+		for (int g_sort = gap; g_sort < OV.size(); g_sort++)
 		{
 			// for each index not gap-sorted already
 			Course T = OV[g_sort]; // temporary course object
 			int itr = g_sort;
+
 			// iterate indexes by gap (itr >= gap, itr -= gap) and shift them up until correct OV location is found (OV[itr - gap].second > T.second)
-			if (alpha)
+			for (itr = g_sort; itr >= gap && greaterCourse(OV[itr - gap], T, type); itr -= gap)
 			{
-				for (itr = g_sort; itr >= gap && greaterAlpha(OV[itr - gap], T); itr -= gap)
-				{
-					OV[itr] = OV[itr - gap]; // keep shifting till found
-				}
+				OV[itr] = OV[itr - gap]; // keep shifting till found
 			}
-			else if (price)
-			{
-				for (itr = g_sort; itr >= gap && greaterPrice(OV[itr - gap], T); itr -= gap)
-				{
-					OV[itr] = OV[itr - gap]; // keep shifting till found
-				}
-			}
-			else if (rating)
-			{
-				for (itr = g_sort; itr >= gap && greaterRating(OV[itr - gap], T); itr -= gap)
-				{
-					OV[itr] = OV[itr - gap]; // keep shifting till found
-				}
-			}
+
 			OV[itr] = T; // restore temp pair to its position
 		}
 	}
@@ -288,7 +267,7 @@ void UdemyData::shellSort(vector<Course>& OV, int size, bool alpha, bool price, 
 // ---------------------------------------------------
 //      Merge Sort
 // ---------------------------------------------------
-void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha, bool price, bool rating)
+void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, SORT_FILTER type)
 {
 	int first = mid - beg + 1; // set a 'first' index
 	int last = end - mid; // set a 'last' index
@@ -309,45 +288,16 @@ void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool al
 	while (subVF < first && subVL < last)
 	{
 		// until end is reached for each sub vector
-		if (alpha)
+		if (greaterCourse(VF[subVF], VL[subVL], type))
 		{
-			if (greaterAlpha(VF[subVF], VL[subVL]))
-			{
-				// pick lesser rating (the second of the pair of each vector index)
-				OV[subOV] = VL[subVL]; // and swap original vector's index with that subvector index
-				subVL++;
-			}
-			else
-			{
-				OV[subOV] = VF[subVF];
-				subVF++;
-			}
+			// pick lesser rating (the second of the pair of each vector index)
+			OV[subOV] = VL[subVL]; // and swap original vector's index with that subvector index
+			subVL++;
 		}
-		else if (price)
+		else
 		{
-			if (greaterPrice(VF[subVF], VL[subVL]))
-			{
-				OV[subOV] = VL[subVL];
-				subVL++;
-			}
-			else
-			{
-				OV[subOV] = VF[subVF];
-				subVF++;
-			}
-		}
-		else if (rating)
-		{
-			if (greaterRating(VF[subVF], VL[subVL]))
-			{
-				OV[subOV] = VL[subVL];
-				subVL++;
-			}
-			else
-			{
-				OV[subOV] = VF[subVF];
-				subVF++;
-			}
+			OV[subOV] = VF[subVF];
+			subVF++;
 		}
 		subOV++; // each relevent index is increased at this point
 	}
@@ -366,13 +316,13 @@ void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool al
 	}
 }
 
-void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, bool alpha, bool price, bool rating)
+void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, SORT_FILTER type)
 {
-	if (beg >= end) // Base-case for recursive calls
-		return;
-
-	int mid = beg + (end - beg) / 2; // set middle index
-	mergeSort(OV, beg, mid, alpha, price, rating); // recursively call our merge function to separate our Object Vector into merge-able parts
-	mergeSort(OV, mid + 1, end, alpha, price, rating);
-	mergeUtil(OV, beg, mid, end, alpha, price, rating); // Send our sub-indexes to do magic sorting stuff
+	if (beg < end) // Base-case for recursive calls
+	{
+		int mid = beg + (end - beg) / 2; // set middle index
+		mergeSort(OV, beg, mid, type); // recursively call our merge function to separate our Object Vector into merge-able parts
+		mergeSort(OV, mid + 1, end, type);
+		mergeUtil(OV, beg, mid, end, type); // Send our sub-indexes to do magic sorting stuff
+	}
 }

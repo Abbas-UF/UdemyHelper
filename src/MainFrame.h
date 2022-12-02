@@ -38,12 +38,14 @@ struct wxCourseInfo
 
 	wxStaticText* price;
 };
+enum SORT_TYPE { SHELL = 02, MERGE = 00 };
 
 class MainFrame : public wxFrame
 {
 	private:
 		// Data
 		UdemyData udemyData;
+		SORT_TYPE sortType;
 
 		// Input Fields
 		wxListBox* categoriesList;
@@ -55,11 +57,16 @@ class MainFrame : public wxFrame
 		wxCoursesList coursesList;
 		wxCourseInfo courseInfo;
 
+		// Sort Button
+		wxButton* sortButton;
+
 		// Private Helpers
 		void updateCourseInfo(Course course);
 		vector<string> getSelectedCategories();
+		SORT_FILTER getSelectedFilter();
 
 		// Private Binds
+		void onSortPressed(wxCommandEvent& evt);
 		void onApplyPressed(wxCommandEvent& evt);
 		void onCourseSelected(wxCommandEvent& evt);
 

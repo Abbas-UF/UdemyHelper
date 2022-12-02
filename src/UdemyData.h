@@ -14,6 +14,8 @@
 
 using namespace std;
 
+enum SORT_FILTER {RATING = 00, ALPHA = 02, PRICE = 04};
+
 struct Course
 {
 	string title;
@@ -55,7 +57,7 @@ class UdemyData
 		bool getBool(istringstream& parser);
 
 		// Private Helpers (Sorting)
-		bool greaterAlpha(const Course& a, const Course& b);
+		bool greaterCourse(const Course& a, const Course& b, SORT_FILTER type);
 		bool greaterPrice(const Course& a, const Course& b);
 		bool greaterRating(const Course& a, const Course& b);
 
@@ -77,8 +79,8 @@ class UdemyData
 		void printMap();
 
 		// Sorts
-		void shellSort(vector<Course>& OV, int size, bool alpha = false, bool price = false, bool rating = true);
-		void mergeUtil(vector<Course>& OV, int beg, int mid, int end, bool alpha, bool price, bool rating);
-		void mergeSort(vector<Course>& OV, int beg, int end, bool alpha = false, bool price = false, bool rating = true);
+		void shellSort(vector<Course>& OV, SORT_FILTER type);
+		void mergeUtil(vector<Course>& OV, int beg, int mid, int end, SORT_FILTER type);
+		void mergeSort(vector<Course>& OV, int beg, int end, SORT_FILTER type);
 };
 
