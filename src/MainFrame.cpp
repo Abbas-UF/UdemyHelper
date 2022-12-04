@@ -167,18 +167,18 @@ void MainFrame::updateCourseInfo(Course course)
 	courseInfo.category->SetLabel(course.category);
 	courseInfo.subcategory->SetLabel(course.subcategory);
 	courseInfo.numRatings->SetLabel(to_string(course.numRatings));
-	courseInfo.rating->SetLabel(to_string(course.rating));
-	courseInfo.hiRating->SetLabel(to_string(course.hiRating));
-	courseInfo.loRating->SetLabel(to_string(course.loRating));
+	courseInfo.rating->SetLabel(wxString::Format("%0.2f", course.rating));
+	courseInfo.hiRating->SetLabel(wxString::Format("%0.2f", course.hiRating));
+	courseInfo.loRating->SetLabel(wxString::Format("%0.2f", course.loRating));
 	courseInfo.instructor->SetLabel(course.instructor);
 	courseInfo.language->SetLabel(course.language);
 	courseInfo.numArticles->SetLabel(to_string(course.numArticles));
 	courseInfo.numPracticeTests->SetLabel(to_string(course.numPracticeTests));
 	courseInfo.numCodingExercises->SetLabel(to_string(course.numCodingExercises));
 	courseInfo.additionalResources->SetLabel(to_string(course.additionalResources));
-	courseInfo.videoHours->SetLabel(to_string(course.videoHours));
-	courseInfo.bestSeller->SetLabel(to_string(course.bestSeller));
-	courseInfo.price->SetLabel(to_string(course.price));
+	courseInfo.videoHours->SetLabel(wxString::Format("%0.2f", course.videoHours));
+	courseInfo.bestSeller->SetLabel(course.strBestSeller);
+	courseInfo.price->SetLabel("$" + wxString::Format("%0.2f", course.price));
 }
 
 vector<string> MainFrame::getSelectedCategories()

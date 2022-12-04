@@ -9,7 +9,10 @@ UdemyData::UdemyData(string filePath)
 {
 	readCSV(filePath);
 }
-
+inline string UdemyData::bestSellerToString(bool bestSeller)
+{
+	return bestSeller ? "True" : "False";
+}
 void UdemyData::readCSV(string filePath)
 {
 	ifstream csvFile(filePath);
@@ -53,6 +56,7 @@ void UdemyData::readCSV(string filePath)
 			temp.videoHours = getDouble(parser);
 			temp.additionalResources = getInt(parser);
 			temp.bestSeller = getBool(parser);
+			temp.strBestSeller = bestSellerToString(temp.bestSeller);
 			temp.price = getDouble(parser);
 
 			udemyMap[temp.category].push_back(temp);

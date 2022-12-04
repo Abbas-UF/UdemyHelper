@@ -41,6 +41,7 @@ struct Course
 	double videoHours;
 
 	bool bestSeller;
+	string strBestSeller;
 
 	double price;
 };
@@ -58,8 +59,6 @@ class UdemyData
 
 		// Private Helpers (Sorting)
 		bool greaterCourse(const Course& a, const Course& b, SORT_FILTER type);
-		bool greaterPrice(const Course& a, const Course& b);
-		bool greaterRating(const Course& a, const Course& b);
 
 	public:
 		// Constructor(s)
@@ -74,6 +73,7 @@ class UdemyData
 		vector<wxString> getWXCategories();
 		vector<Course> getCoursesByRating(vector<string> categories, float rating);
 		int getMapSize();
+		inline string bestSellerToString(bool bestSeller);
 		
 		// Output-ers
 		void printMap();
