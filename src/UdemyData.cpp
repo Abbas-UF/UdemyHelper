@@ -9,10 +9,12 @@ UdemyData::UdemyData(string filePath)
 {
 	readCSV(filePath);
 }
+
 inline string UdemyData::bestSellerToString(bool bestSeller)
 {
 	return bestSeller ? "True" : "False";
 }
+
 void UdemyData::readCSV(string filePath)
 {
 	ifstream csvFile(filePath);
@@ -185,22 +187,7 @@ double UdemyData::getDouble(istringstream& parser)
 
 bool UdemyData::getBool(istringstream& parser)
 {
-	string label = getString(parser);
-	
-	// TODO: Delete later
-	// INFO: Transform and for loop are similar in performance, but the latter is easier-to-read.
-	/*
-	// Solution to transform function found at:
-	// https://stackoverflow.com/questions/313970/how-to-convert-an-instance-of-stdstring-to-lower-case
-	transform(label.begin(), label.end(), label.begin(), 
-	[](unsigned char c) {return std::tolower(c);} 
-	);
-	*/
-
-	for (int i = 0; i < label.size(); i++)
-	{
-		label[i] = tolower((unsigned char) label[i]);
-	}
+	string label = tolower(getString(parser));
 
 	if (label == "yes" || label == "y")
 	{
@@ -210,6 +197,16 @@ bool UdemyData::getBool(istringstream& parser)
 	{
 		return false;
 	}
+}
+
+string UdemyData::tolower(string input)
+{
+	for (int i = 0; i < input.size(); i++)
+	{
+		input[i] = std::tolower((unsigned char)input[i]);
+	}
+
+	return input;
 }
 
 // -----------------------------------------------------------------------------------------------------------
@@ -240,7 +237,7 @@ bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type
 	}
 	else
 	{
-		return a.title > b.title;
+		return tolower(a.title) > tolower(b.title);
 	}
 }
 

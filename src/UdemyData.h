@@ -56,6 +56,7 @@ class UdemyData
 		double getDouble(istringstream& parser);
 		int getInt(istringstream& parser);
 		bool getBool(istringstream& parser);
+		string tolower(string input);
 
 		// Private Helpers (Sorting)
 		bool greaterCourse(const Course& a, const Course& b, SORT_FILTER type);
