@@ -2,11 +2,125 @@
 #include <wx/wx.h>
 #include <wx/gbsizer.h>
 
+// Private Helpers
+void MainFrame::updateCourseInfo(Course course)
+{
+	courseInfo.title->SetLabel(course.title);
+	courseInfo.topic->SetLabel(course.topic);
+	courseInfo.category->SetLabel(course.category);
+	courseInfo.subcategory->SetLabel(course.subcategory);
+	courseInfo.numRatings->SetLabel(to_string(course.numRatings));
+	courseInfo.rating->SetLabel(wxString::Format("%0.2f", course.rating));
+	courseInfo.hiRating->SetLabel(wxString::Format("%0.2f", course.hiRating));
+	courseInfo.loRating->SetLabel(wxString::Format("%0.2f", course.loRating));
+	courseInfo.instructor->SetLabel(course.instructor);
+	courseInfo.language->SetLabel(course.language);
+	courseInfo.numArticles->SetLabel(to_string(course.numArticles));
+	courseInfo.numPracticeTests->SetLabel(to_string(course.numPracticeTests));
+	courseInfo.numCodingExercises->SetLabel(to_string(course.numCodingExercises));
+	courseInfo.additionalResources->SetLabel(to_string(course.additionalResources));
+	courseInfo.videoHours->SetLabel(wxString::Format("%0.2f", course.videoHours));
+	courseInfo.bestSeller->SetLabel(course.strBestSeller);
+	courseInfo.price->SetLabel("$" + wxString::Format("%0.2f", course.price));
+}
+
+vector<string> MainFrame::getSelectedCategories()
+{
+	wxArrayInt selectedIndexes;
+	categoriesList->GetSelections(selectedIndexes);
+
+	vector<string> result;
+
+	for (auto i = selectedIndexes.begin(); i != selectedIndexes.end(); i++)
+	{
+		result.push_back(categoriesList->GetString(*i).ToStdString());
+	}
+
+	return result;
+}
+
+SORT_FILTER MainFrame::getSelectedFilter()
+{
+	if (filterList->GetStringSelection() == "Rating")
+	{
+		return SORT_FILTER::RATING;
+	}
+	else if (filterList->GetStringSelection() == "Price")
+	{
+		return SORT_FILTER::PRICE;
+	}
+	else if (filterList->GetStringSelection() == "Number of Ratings")
+	{
+		return SORT_FILTER::NUM_RATING;
+	}
+	else
+	{
+		return SORT_FILTER::ALPHA;
+	}
+}
+
+// Private Binds
+void MainFrame::onSortPressed(wxCommandEvent& evt)
+{
+	if (sortType == SORT_TYPE::SHELL)
+	{
+		sortButton->SetLabel("Sort: Merge");
+		sortType = SORT_TYPE::MERGE;
+	}
+	else
+	{
+		sortButton->SetLabel("Sort: Shell");
+		sortType = SORT_TYPE::SHELL;
+	}
+}
+
+void MainFrame::onApplyPressed(wxCommandEvent& evt)
+{
+	vector<string> selectedCategories = getSelectedCategories();
+
+	if (!selectedCategories.empty())
+	{
+		coursesList.coursesVector = udemyData.getCoursesByRating(selectedCategories, ratingsSlider->GetValue());
+
+		chrono::steady_clock::time_point beg;
+		chrono::steady_clock::time_point end;
+
+		if (sortType == SORT_TYPE::SHELL)
+		{
+			beg = chrono::high_resolution_clock::now();
+			udemyData.shellSort(coursesList.coursesVector, getSelectedFilter());
+			end = chrono::high_resolution_clock::now();
+		}
+		else
+		{
+			beg = chrono::high_resolution_clock::now();
+			udemyData.mergeSort(coursesList.coursesVector, 0, coursesList.coursesVector.size() - 1, getSelectedFilter());
+			end = chrono::high_resolution_clock::now();
+		}
+
+		wxLogStatus("Sort Time: " + (wxString) to_string(chrono::duration_cast<chrono::milliseconds>(end - beg).count()) + "ms");
+
+		wxArrayString output;
+		for (int i = 0; i < coursesList.coursesVector.size(); i++)
+		{
+			output.Add(coursesList.coursesVector[i].title);
+		}
+
+		coursesList.listBox->Set(output);
+	}
+}
+
+void MainFrame::onCourseSelected(wxCommandEvent& evt)
+{
+	updateCourseInfo(coursesList.coursesVector[coursesList.listBox->GetSelection()]);
+}
+
+// Constructor
 MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 {
 	// Read/Make Lists
 	udemyData.readCSV("Files/Udemy_Clean.csv");
-	vector<wxString> filters = { "Alphabetic" , "Price", "Rating", "Number of Ratings"};
+	vector<wxString> filters = { "Alphabetic" , "Price", "Rating", "Number of Ratings" };
 	vector<wxString> categories = udemyData.getWXCategories();
 
 	// Create main panel
@@ -158,115 +272,4 @@ MainFrame::MainFrame(const wxString& title) : wxFrame(nullptr, wxID_ANY, title)
 	coursesList.listBox->Bind(wxEVT_LISTBOX, &MainFrame::onCourseSelected, this);
 
 	CreateStatusBar();
-}
-
-void MainFrame::updateCourseInfo(Course course)
-{
-	courseInfo.title->SetLabel(course.title);
-	courseInfo.topic->SetLabel(course.topic);
-	courseInfo.category->SetLabel(course.category);
-	courseInfo.subcategory->SetLabel(course.subcategory);
-	courseInfo.numRatings->SetLabel(to_string(course.numRatings));
-	courseInfo.rating->SetLabel(wxString::Format("%0.2f", course.rating));
-	courseInfo.hiRating->SetLabel(wxString::Format("%0.2f", course.hiRating));
-	courseInfo.loRating->SetLabel(wxString::Format("%0.2f", course.loRating));
-	courseInfo.instructor->SetLabel(course.instructor);
-	courseInfo.language->SetLabel(course.language);
-	courseInfo.numArticles->SetLabel(to_string(course.numArticles));
-	courseInfo.numPracticeTests->SetLabel(to_string(course.numPracticeTests));
-	courseInfo.numCodingExercises->SetLabel(to_string(course.numCodingExercises));
-	courseInfo.additionalResources->SetLabel(to_string(course.additionalResources));
-	courseInfo.videoHours->SetLabel(wxString::Format("%0.2f", course.videoHours));
-	courseInfo.bestSeller->SetLabel(course.strBestSeller);
-	courseInfo.price->SetLabel("$" + wxString::Format("%0.2f", course.price));
-}
-
-vector<string> MainFrame::getSelectedCategories()
-{
-	wxArrayInt selectedIndexes;
-	categoriesList->GetSelections(selectedIndexes);
-
-	vector<string> result;
-
-	for (auto i = selectedIndexes.begin(); i != selectedIndexes.end(); i++)
-	{
-		result.push_back(categoriesList->GetString(*i).ToStdString());
-	}
-
-	return result;
-}
-
-SORT_FILTER MainFrame::getSelectedFilter()
-{
-	if (filterList->GetStringSelection() == "Rating")
-	{
-		return SORT_FILTER::RATING;
-	}
-	else if (filterList->GetStringSelection() == "Price")
-	{
-		return SORT_FILTER::PRICE;
-	}
-	else if (filterList->GetStringSelection() == "Number of Ratings")
-	{
-		return SORT_FILTER::NUM_RATING;
-	}
-	else
-	{
-		return SORT_FILTER::ALPHA;
-	}
-}
-
-void MainFrame::onSortPressed(wxCommandEvent& evt)
-{
-	if (sortType == SORT_TYPE::SHELL)
-	{
-		sortButton->SetLabel("Sort: Merge");
-		sortType = SORT_TYPE::MERGE;
-	}
-	else
-	{
-		sortButton->SetLabel("Sort: Shell");
-		sortType = SORT_TYPE::SHELL;
-	}
-}
-
-void MainFrame::onApplyPressed(wxCommandEvent& evt)
-{
-	vector<string> selectedCategories = getSelectedCategories();
-
-	if (!selectedCategories.empty())
-	{
-		coursesList.coursesVector = udemyData.getCoursesByRating(selectedCategories, ratingsSlider->GetValue());
-
-		chrono::steady_clock::time_point beg;
-		chrono::steady_clock::time_point end;
-
-		if (sortType == SORT_TYPE::SHELL)
-		{
-			beg = chrono::high_resolution_clock::now();
-			udemyData.shellSort(coursesList.coursesVector, getSelectedFilter());
-			end = chrono::high_resolution_clock::now();
-		}
-		else
-		{
-			beg = chrono::high_resolution_clock::now();
-			udemyData.mergeSort(coursesList.coursesVector, 0, coursesList.coursesVector.size() - 1, getSelectedFilter());
-			end = chrono::high_resolution_clock::now();
-		}
-
-		wxLogStatus("Sort Time: " + (wxString) to_string(chrono::duration_cast<chrono::milliseconds>(end - beg).count()) + "ms");
-
-		wxArrayString output;
-		for (int i = 0; i < coursesList.coursesVector.size(); i++)
-		{
-			output.Add(coursesList.coursesVector[i].title);
-		}
-
-		coursesList.listBox->Set(output);
-	}
-}
-
-void MainFrame::onCourseSelected(wxCommandEvent& evt)
-{
-	updateCourseInfo(coursesList.coursesVector[coursesList.listBox->GetSelection()]);
 }

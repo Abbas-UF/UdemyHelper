@@ -1,140 +1,26 @@
 #include "UdemyData.h"
 #include <fstream>
 #include <sstream>
-#include <algorithm>
 #include <iostream>
 using namespace std;
 
-UdemyData::UdemyData(string filePath)
+// Private Helpers (Misc)
+string UdemyData::tolower(string input)
 {
-	readCSV(filePath);
+	for (int i = 0; i < input.size(); i++)
+	{
+		input[i] = std::tolower((unsigned char)input[i]);
+	}
+
+	return input;
 }
 
-inline string UdemyData::bestSellerToString(bool bestSeller)
+string UdemyData::bestSellerToString(bool bestSeller)
 {
 	return bestSeller ? "True" : "False";
 }
 
-void UdemyData::readCSV(string filePath)
-{
-	ifstream csvFile(filePath);
-
-	if (csvFile.is_open())
-	{
-		// Clear previously read data
-		if (!udemyMap.empty())
-		{
-			udemyMap.clear();
-		}
-
-		string line;
-		getline(csvFile, line);	// Skip first line containing header info.
-
-		while (!csvFile.eof())
-		{
-			Course temp;
-
-			// Get line
-			getline(csvFile, line);
-
-			// Setup parser
-			istringstream parser(line);
-
-			getline(parser, line, ',');	// Skip ID
-			temp.title = getString(parser);
-			temp.rating = getDouble(parser);
-			temp.hiRating = getDouble(parser);
-			temp.loRating = getDouble(parser);
-			temp.numRatings = getInt(parser);
-			temp.category = getString(parser);
-			temp.subcategory = getString(parser);
-			temp.topic = getString(parser);
-			temp.instructor = getString(parser);
-			temp.language = getString(parser);
-			getline(parser, line, ',');
-			temp.numPracticeTests = getInt(parser);
-			temp.numArticles = getInt(parser);
-			temp.numCodingExercises = getInt(parser);
-			temp.videoHours = getDouble(parser);
-			temp.additionalResources = getInt(parser);
-			temp.bestSeller = getBool(parser);
-			temp.strBestSeller = bestSellerToString(temp.bestSeller);
-			temp.price = getDouble(parser);
-
-			udemyMap[temp.category].push_back(temp);
-		}
-	}
-	else
-	{
-		cout << "> Error: " << filePath << " could not be opened!" << endl;
-	}
-}
-
-int UdemyData::getMapSize()
-{
-	return udemyMap.size();
-}
-
-unordered_map<string, vector<Course>>& UdemyData::getMap()
-{
-	return udemyMap;
-}
-
-vector<wxString> UdemyData::getWXCategories()
-{
-	vector<wxString> result;
-
-	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
-	{
-		result.push_back(i->first);
-	}
-
-	// STL sort has worst-case time complexity of O(logN)
-	sort(result.begin(), result.end());
-
-	return result;
-}
-
-vector<Course> UdemyData::getCoursesByRating(vector<string> categories, float rating)
-{
-	vector<Course> result;
-
-	for (auto i = 0; i < categories.size(); i++)
-	{
-		auto iterator = udemyMap.find(categories[i]);
-
-		// This check is unnecessary, but here for safety purposes
-		if (iterator != udemyMap.end())
-		{
-			for (auto j = iterator->second.begin(); j != iterator->second.end(); j++)
-			{
-				if (j->rating >= rating)
-				{
-					result.push_back(*j);
-				}
-			}
-		}
-	}
-
-	return result;
-}
-
-void UdemyData::printMap()
-{
-	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
-	{
-		cout << "***===Category: " << i->first << " ===***" << endl;
-		int vectorSize = i->second.size();
-		// Accessing the second value in the map(set of Course objects)
-		for (auto j = 0; j < vectorSize; j++)
-		{
-			string temp = i->second[j].title;
-			cout << "> " << temp << endl;
-		}
-	}
-}
-
-// Private Helpers (Reading CSV)
+// Private Helpers (Parsing)
 string UdemyData::getString(istringstream& parser)
 {
 	string result = "";
@@ -199,28 +85,7 @@ bool UdemyData::getBool(istringstream& parser)
 	}
 }
 
-string UdemyData::tolower(string input)
-{
-	for (int i = 0; i < input.size(); i++)
-	{
-		input[i] = std::tolower((unsigned char)input[i]);
-	}
-
-	return input;
-}
-
-// -----------------------------------------------------------------------------------------------------------
-//												 SORTING METHODS
-// -----------------------------------------------------------------------------------------------------------
-
-// Quick note:
-// The way 'sort by' is handled is a bit messy, but it works for now.
-// I will try to find a better way later, just wanted to get something working
-//	- If there are no bool arguments sent in (see shell/merge function), default is sort by rating
-
-// ---------------------------------------------------
-//      Comparison Operators for each 'sort by'
-// ---------------------------------------------------
+// Private Helpers (Sorting)
 bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type)
 {
 	if (type == SORT_FILTER::PRICE && a.price != b.price)
@@ -231,7 +96,7 @@ bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type
 	{
 		return (a.rating > b.rating);
 	}
-	else if(type == SORT_FILTER::NUM_RATING && a.numRatings != b.numRatings)
+	else if (type == SORT_FILTER::NUM_RATING && a.numRatings != b.numRatings)
 	{
 		return (a.numRatings > b.numRatings);
 	}
@@ -241,11 +106,109 @@ bool UdemyData::greaterCourse(const Course& a, const Course& b, SORT_FILTER type
 	}
 }
 
-// ---------------------------------------------------
-//      Shell Sort
-// ---------------------------------------------------
+// Constructor(s)
+UdemyData::UdemyData(string filePath)
+{
+	readCSV(filePath);
+}
 
-// The bools track whether an alphabetical, price, or rating 'sort by' is selected
+// Modifiers
+void UdemyData::readCSV(string filePath)
+{
+	ifstream csvFile(filePath);
+
+	if (csvFile.is_open())
+	{
+		// Clear previously read data
+		if (!udemyMap.empty())
+		{
+			udemyMap.clear();
+		}
+
+		string line;
+		getline(csvFile, line);	// Skip first line containing header info.
+
+		while (!csvFile.eof())
+		{
+			Course temp;
+
+			// Get line
+			getline(csvFile, line);
+
+			// Setup parser
+			istringstream parser(line);
+
+			getline(parser, line, ',');	// Skip ID
+			temp.title = getString(parser);
+			temp.rating = getDouble(parser);
+			temp.hiRating = getDouble(parser);
+			temp.loRating = getDouble(parser);
+			temp.numRatings = getInt(parser);
+			temp.category = getString(parser);
+			temp.subcategory = getString(parser);
+			temp.topic = getString(parser);
+			temp.instructor = getString(parser);
+			temp.language = getString(parser);
+			getline(parser, line, ',');
+			temp.numPracticeTests = getInt(parser);
+			temp.numArticles = getInt(parser);
+			temp.numCodingExercises = getInt(parser);
+			temp.videoHours = getDouble(parser);
+			temp.additionalResources = getInt(parser);
+			temp.bestSeller = getBool(parser);
+			temp.strBestSeller = bestSellerToString(temp.bestSeller);
+			temp.price = getDouble(parser);
+
+			udemyMap[temp.category].push_back(temp);
+		}
+	}
+	else
+	{
+		cout << "> Error: " << filePath << " could not be opened!" << endl;
+	}
+}
+
+// Getters
+vector<wxString> UdemyData::getWXCategories()
+{
+	vector<wxString> result;
+
+	for (auto i = udemyMap.begin(); i != udemyMap.end(); i++)
+	{
+		result.push_back(i->first);
+	}
+
+	// STL sort has worst-case time complexity of O(logN)
+	sort(result.begin(), result.end());
+
+	return result;
+}
+
+vector<Course> UdemyData::getCoursesByRating(vector<string> categories, float rating)
+{
+	vector<Course> result;
+
+	for (auto i = 0; i < categories.size(); i++)
+	{
+		auto iterator = udemyMap.find(categories[i]);
+
+		// This check is unnecessary, but here for safety purposes
+		if (iterator != udemyMap.end())
+		{
+			for (auto j = iterator->second.begin(); j != iterator->second.end(); j++)
+			{
+				if (j->rating >= rating)
+				{
+					result.push_back(*j);
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
+// Sorts
 void UdemyData::shellSort(vector<Course>& OV, SORT_FILTER type)
 {
 	for (int gap = OV.size() / 2; gap > 0; gap /= 2)
@@ -268,10 +231,17 @@ void UdemyData::shellSort(vector<Course>& OV, SORT_FILTER type)
 	}
 }
 
+void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, SORT_FILTER type)
+{
+	if (beg < end) // Base-case for recursive calls
+	{
+		int mid = beg + (end - beg) / 2; // set middle index
+		mergeSort(OV, beg, mid, type); // recursively call our merge function to separate our Object Vector into merge-able parts
+		mergeSort(OV, mid + 1, end, type);
+		mergeUtil(OV, beg, mid, end, type); // Send our sub-indexes to do magic sorting stuff
+	}
+}
 
-// ---------------------------------------------------
-//      Merge Sort
-// ---------------------------------------------------
 void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, SORT_FILTER type)
 {
 	int first = mid - beg + 1; // set a 'first' index
@@ -318,16 +288,5 @@ void UdemyData::mergeUtil(vector<Course>& OV, int beg, int mid, int end, SORT_FI
 		OV[subOV] = VL[subVL];
 		subOV++;
 		subVL++;
-	}
-}
-
-void UdemyData::mergeSort(vector<Course>& OV, int beg, int end, SORT_FILTER type)
-{
-	if (beg < end) // Base-case for recursive calls
-	{
-		int mid = beg + (end - beg) / 2; // set middle index
-		mergeSort(OV, beg, mid, type); // recursively call our merge function to separate our Object Vector into merge-able parts
-		mergeSort(OV, mid + 1, end, type);
-		mergeUtil(OV, beg, mid, end, type); // Send our sub-indexes to do magic sorting stuff
 	}
 }

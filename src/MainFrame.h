@@ -4,12 +4,6 @@
 #include <wx/wx.h>
 #include <wx/listctrl.h>
 
-struct wxCoursesList
-{
-	wxListBox* listBox;
-	vector<Course> coursesVector;
-};
-
 struct wxCourseInfo
 {
 	wxStaticText* title;
@@ -38,6 +32,13 @@ struct wxCourseInfo
 
 	wxStaticText* price;
 };
+
+struct wxCoursesList
+{
+	wxListBox* listBox;
+	vector<Course> coursesVector;
+};
+
 enum SORT_TYPE { SHELL = 02, MERGE = 00 };
 
 class MainFrame : public wxFrame
@@ -71,5 +72,6 @@ class MainFrame : public wxFrame
 		void onCourseSelected(wxCommandEvent& evt);
 
 	public:
+		// Constructor
 		MainFrame(const wxString& title);
 };

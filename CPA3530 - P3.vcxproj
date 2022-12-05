@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="src\App.cpp" />
     <ClCompile Include="src\MainFrame.cpp" />
-    <ClCompile Include="src\Source.cpp" />
     <ClCompile Include="src\UdemyData.cpp" />
   </ItemGroup>
   <ItemGroup>
